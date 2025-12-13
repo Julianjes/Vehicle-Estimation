@@ -1,0 +1,81 @@
+function [params, x0, P0, R, Q,x,time,dt] = initVehicleParams()
+% initVehicleParams: Initialize vehicle, EKF states, inputs, and sensor parameters
+%
+% Outputs:
+%   params      : vehicle parameters (m, Iz, a, b, Cf_true, Cr_true)
+%   x0          : initial EKF state [vy; r; psi; Cf; Cr]
+%   P0          : initial EKF covariance
+%   R           : measurement noise covariance
+%   Q           : process noise covariance
+%   vx          : longitudinal velocity input vector
+%   delta       : steering input vector
+%   gyro_bias   : gyro bias
+%   acc_bias    : accelerometer bias
+%   mag_bias    : magnetometer bias
+%   gyro_sigma  : gyro noise std
+%   acc_sigma   : accelerometer noise std
+%   mag_sigma   : magnetometer noise std
+%   dt          : simulation time step
+%   time        : simulation time vector
+
+%% 1. Simulation parameters
+load('Parameter_data.mat'), % Experimental Value
+
+t = SimData.xdot.Time;              % time 
+psi = SimData.psi.Data;             % Heading angle (inert Frame
+xdot= SimData.xdot.Data;            % Velocity in the x_direction
+ydot= SimData.ydot.Data;            % Velocity in the y_direction
+beta = SimData.Beta.Data;           % Side slip angel
+r = SimData.r.Data;                 % yaw rate
+xddot = SimData.xddot.Data;         % acceleration in the x_direction
+yddot = SimData.yddot.Data;         % acceleration in the y_direction
+Delta_L = SimData.FrntAxl.Steer.WhlAngFL.Data;
+Delta_R = SimData.FrntAxl.Steer.WhlAngFR.Data;
+delta = (Delta_R + Delta_L)/2;
+
+dt = mean(diff(t));
+time = t;
+%% 2. Vehicle parameters
+params.m = 1542;          % Vehicle mass [kg]
+params.Iz = 2400;         % Yaw moment of inertia [kg*m^2]
+params.lf = 1.2;           % Distance from CG to front axle [m]
+params.lr = 1.5;           % Distance from CG to rear axle [m]
+params.Cf_true = 80000;   % True front cornering stiffness [N/rad]
+params.Cr_true = 70000;   % True rear cornering stiffness [N/rad]
+params.hCG = 0.55;        % Cg height
+params.tFw = 1.6;         % Front track Width
+params.tRw = 1.62;        % Rear Width
+
+%% 3. EKF initial state
+x0 = [0;       % lateral velocity vy [m/s]
+      0;       % yaw rate r [rad/s]
+      0;       % heading psi [rad]
+     7.960e4;   % initial guess Cf [N/rad]
+      5.3089e4];  % initial guess Cr [N/rad]
+
+P0 = diag([0.1, 0.01, 0.01, 1e5, 1e5]);  % Initial covariance
+
+%% 4. Sensor noise and bias
+gyro_bias = 0.001;  gyro_sigma = 0.01;     % Gyro [rad/s]
+acc_bias  = 0.05;   acc_sigma  = 0.1;     % Accelerometer [m/s^2]
+mag_bias  = 0.01;   mag_sigma  = 0.02;    % Magnetometer [rad]
+
+params.gyro_bias = gyro_bias;
+params.gyro_sigma = gyro_sigma;
+params.acc_bias = acc_bias;
+params.acc_sigma = acc_sigma;
+params.mag_bias = mag_bias;
+params.mag_sigma = mag_sigma;
+
+
+R = diag([acc_sigma^2, gyro_sigma^2, mag_sigma^2]);  % Measurement noise covariance
+
+%% 5. Process noise (EKF)
+Q = diag([1e-4, 1e-5, 1e-5, 1, 1]);   % Process noise covariance
+
+%% 6. Inputs (example)
+vx = xdot;          % Longitudinal velocity [m/s]
+
+x = [delta(:),vx(:)];
+
+end
