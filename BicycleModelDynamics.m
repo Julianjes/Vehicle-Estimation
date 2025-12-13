@@ -3,33 +3,51 @@ function xdot = BicycleModelDynamics(x, u, params)
 %
 % Inputs:
 %   x = [vy; r; psi,Cf,Cr]   - states, lateral velocity, Yaw rate, heading 
-
-vy =x(1);
-r = x(2);
-psi = x(3);
-Cf = x(4);
-Cr = x(5);
+% All in body frame (expect for psi)
+vy =x(1);                   % Velocity in the y_direction
+r = x(2);                   % Yaw rate in the 
+psi = x(3);                 % Heaing Angle
+Cf = x(4);                  % Cornering Stiffness Front Tire
+Cr = x(5);                  % Cornering Stiffness Rear Tire
 
 %   u = [vx; delta]    - inputs, Longtitudinal velocity, steering angle
-vu = u(1);vu = (max(vu,1));
-delta = u(2);
+vu = u(1);vu = (max(vu,1)); % Velocity in X_direction [ Body Frame)
+delta = u(2);               % Steering Angle (psi, Initial Frame)
+
+% Z direction
+vz = 0;                       % No Velocity in vz direction
+z_pos = 0.01;                 % Flat Z direction
+vz_ddot = 0;
+
 
 
 % Parameter
-m = params.m;
-Iz = params.Iz;
-lf = params.lf;
-lr = params.lr;
+m = params.m;               % Mass [kg]
+Iz = params.Iz;             % Intial Moment  
+lf = params.lf;             % Front leght (axel to wheel)
+lr = params.lr;             % Rear length
 
 
-alpha_f = (vy + lf*r)/vu - delta;   % We ignore change in atan becuase it just so small
-alpha_r = (vy - lr*r)/vu;
+alpha_f = (vy + lf*r)/vu - delta;  % front tire slip angle % We ignore change in atan becuase it just so small, 
+alpha_r = (vy - lr*r)/vu;          % Rear Tire slip angle;
 
-FyF = -Cf * alpha_f;
-FyR = -Cr * alpha_r;
+FyF = -Cf * alpha_f;               % Force on the Front tire (body frame)
+FyR = -Cr * alpha_r;               % Force on the Rear tire  ( Body frame)
 
-vy_dot = -r*vu + (FyR + FyF*cos(delta))/m; % Fxf is zero becuase we ignore longtitudal, becuase constant speed
-r_dot = (-lr*FyR + lf*(FyF*cos(delta)))/Iz;
+% Fxf is zero becuase we ignore longtitudal, becuase constant speed
+FxF = 0;    % Front
+FxR = 9;    % Rear
+
+% Assume pitch and rolls are zero. 
+FzF = -(m*9.81*(lr))/(lf+lr);        % Force acting on the front (bz direction)
+FzR = -(m*9.81*(lf))/(lf+lr);        % Force acting on the Rear ( bz direction)
+
+vy_dot = -r*vu + (FyR + FyF*cos(delta)+FxF*sin(delta))/m; % y_acceleartion (body Frame). by
+vu_dot = r*vy + (FxR + FyF*cos(delta) + FxF*sind(delta))/m; % x_direction (body frame). bz
+r_dot = (-lr*FyR + lf*(FyF*cos(delta) + FxF*sin(delta)))/Iz; % raw acceleration in (body Frame) in moment about bz.
+
+
+
 psi_dot = r;
 
 cf_dot = 0;
