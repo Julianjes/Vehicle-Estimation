@@ -38,9 +38,9 @@ time = t;
 
 %% Postion and z load
 ref = load('Driving_const_2.mat');
-x_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,1);
-y_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,2);
-z_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,3);
+x_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,1);   % Fixed Frame, (inertial
+y_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,2);   % Fixed Frame  (inertial
+z_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,3);   % Fixed Frame   (inertial
 
 
 %% 2. Vehicle parameters
