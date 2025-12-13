@@ -35,6 +35,14 @@ delta = (Delta_R + Delta_L)/2;      % steering in (Body fram)
 
 dt = mean(diff(t));
 time = t;
+
+%% Postion and z load
+ref = load('Driving_const_2.mat');
+x_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,1);
+y_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,2);
+z_ref = ref.data.ActorSpecifications(1,2).Waypoints(:,3);
+
+
 %% 2. Vehicle parameters
 params.m = 1542;          % Vehicle mass [kg]
 params.Iz = 2400;         % Yaw moment of inertia [kg*m^2]
