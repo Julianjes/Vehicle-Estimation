@@ -19,19 +19,19 @@ function [params, x0, P0, R, Q,x,time,dt] = initVehicleParams()
 %   time        : simulation time vector
 
 %% 1. Simulation parameters
-load('Parameter_data.mat')
+load('Parameter_data.mat'), % Experimental Value
 
-t = SimData.xdot.Time; 
-psi = SimData.psi.Data;
-xdot= SimData.xdot.Data;
-ydot= SimData.ydot.Data;
-beta = SimData.Beta.Data;
-r = SimData.r.Data;
-xddot = SimData.xddot.Data;
-yddot = SimData.yddot.Data;
+t = SimData.xdot.Time;              % time 
+psi = SimData.psi.Data;             % Heading angle (inert Frame)
+xdot= SimData.xdot.Data;            % Velocity in the x_direction (Body frame
+ydot= SimData.ydot.Data;            % Velocity in the y_direction  (Body frame)
+beta = SimData.Beta.Data;           % Side slip angel
+r = SimData.r.Data;                 % yaw rate  ( Body frame)
+xddot = SimData.xddot.Data;         % acceleration in the x_direction (body Frame)
+yddot = SimData.yddot.Data;         % acceleration in the y_direction   (body Frame)
 Delta_L = SimData.FrntAxl.Steer.WhlAngFL.Data;
 Delta_R = SimData.FrntAxl.Steer.WhlAngFR.Data;
-delta = (Delta_R + Delta_L)/2;
+delta = (Delta_R + Delta_L)/2;      % steering in (Body fram)
 
 dt = mean(diff(t));
 time = t;
@@ -50,8 +50,8 @@ params.tRw = 1.62;        % Rear Width
 x0 = [0;       % lateral velocity vy [m/s]
       0;       % yaw rate r [rad/s]
       0;       % heading psi [rad]
-     7.960e4;   % initial guess Cf [N/rad]
-      5.3089e4];  % initial guess Cr [N/rad]
+     7.960e4;   % initial guess Corning stiffness [N/rad]
+      5.3089e4];  % initial guess Conering Stiffness [N/rad]
 
 P0 = diag([0.1, 0.01, 0.01, 1e5, 1e5]);  % Initial covariance
 
@@ -74,7 +74,7 @@ R = diag([acc_sigma^2, gyro_sigma^2, mag_sigma^2]);  % Measurement noise covaria
 Q = diag([1e-4, 1e-5, 1e-5, 1, 1]);   % Process noise covariance
 
 %% 6. Inputs (example)
-vx = xdot;          % Longitudinal velocity [m/s]
+vx = xdot;          % Longitudinal velocity [m/s] in [Body Frame]
 
 x = [delta(:),vx(:)];
 
