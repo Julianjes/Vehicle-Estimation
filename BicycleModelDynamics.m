@@ -43,7 +43,7 @@ FzF = -(m*9.81*(lr))/(lf+lr);        % Force acting on the front (bz direction)
 FzR = -(m*9.81*(lf))/(lf+lr);        % Force acting on the Rear ( bz direction)
 
 vy_dot = -r*vu + (FyR + FyF*cos(delta)+FxF*sin(delta))/m; % y_acceleartion (body Frame). by
-vu_dot = r*vy + (FxR + FyF*cos(delta) + FxF*sind(delta))/m; % x_direction (body frame). bz
+vu_dot = r*vy + (FxR + FyF*sin(delta) + FxF*cos(delta))/m; % x_acceleration direction (body frame). bz
 r_dot = (-lr*FyR + lf*(FyF*cos(delta) + FxF*sin(delta)))/Iz; % raw acceleration in (body Frame) in moment about bz.
 
 
@@ -55,4 +55,5 @@ cr_dot = 0;
 
 xdot = [vy_dot;r_dot;psi_dot;cf_dot;cr_dot];
 end
+
 
