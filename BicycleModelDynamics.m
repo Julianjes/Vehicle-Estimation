@@ -53,7 +53,7 @@ psi_dot = r;
 cf_dot = 0;
 cr_dot = 0;
 
-xdot = [vy_dot;r_dot;psi_dot;cf_dot;cr_dot];
+xdot = [vy_dot;vu_dot;r_dot;psi_dot;cf_dot;cr_dot];
 end
 
 
