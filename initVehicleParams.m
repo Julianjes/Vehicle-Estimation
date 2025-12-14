@@ -56,6 +56,7 @@ params.tRw = 1.62;        % Rear Width
 
 %% 3. EKF initial state
 x0 = [0;       % lateral velocity vy [m/s]
+      0;
       0;       % yaw rate r [rad/s]
       0;       % heading psi [rad]
      7.960e4;   % initial guess Corning stiffness [N/rad]
