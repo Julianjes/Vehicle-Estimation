@@ -1,4 +1,4 @@
-function [params, x0, P0, R, Q,x,time,dt] = initVehicleParams()
+function [params, x0, P0, R, Q,u,time,dt] = initVehicleParams()
 % initVehicleParams: Initialize vehicle, EKF states, inputs, and sensor parameters
 %
 % Outputs:
@@ -84,6 +84,6 @@ Q = diag([1e-4, 1e-5, 1e-5, 1, 1]);   % Process noise covariance
 %% 6. Inputs (example)
 vx = xdot;          % Longitudinal velocity [m/s] in [Body Frame]
 
-x = [delta(:),vx(:)];
+u = [delta(:),vx(:)];
 
 end
