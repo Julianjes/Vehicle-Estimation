@@ -36,7 +36,7 @@ FyR = -Cr * alpha_r;               % Force on the Rear tire  ( Body frame)
 
 % Fxf is zero becuase we ignore longtitudal, becuase constant speed
 FxF = 0;    % Front
-FxR = 9;    % Rear
+FxR = 0;    % Rear
 
 % Assume pitch and rolls are zero. 
 FzF = -(m*9.81*(lr))/(lf+lr);        % Force acting on the front (bz direction)
@@ -55,3 +55,4 @@ cr_dot = 0;
 
 xdot = [vy_dot;r_dot;psi_dot;cf_dot;cr_dot];
 end
+
